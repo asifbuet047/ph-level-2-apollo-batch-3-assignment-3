@@ -8,7 +8,7 @@ const router = express.Router();
 router.post(
   "/create-user",
   validateRequestPayloadWithSchema(UserValidation.userCreationValidation),
-  UserController.createUser
+  UserController.createUser,
 );
 
 export const UserRouter = {

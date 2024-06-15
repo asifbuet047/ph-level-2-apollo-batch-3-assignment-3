@@ -12,7 +12,7 @@ const createUser = resolveRequestOrThrowError(
       success: true,
       data: result,
     });
-  }
+  },
 );
 
 export const UserController = {

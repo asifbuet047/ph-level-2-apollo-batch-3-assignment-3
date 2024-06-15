@@ -31,7 +31,7 @@ const userSchema = new Schema<TUSer>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const UserModel = mongoose.model<TUSer>("user", userSchema);
