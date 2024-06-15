@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const userCreationValidation = z.object({
+const userCreationValidationSchema = z.object({
   name: z
     .string({ message: "Name must be string" })
     .min(4, { message: "Name length cant be less than 4" })
@@ -17,7 +17,7 @@ const userCreationValidation = z.object({
   role: z.enum(["user", "admin"], { message: "Only user or admin" }),
 });
 
-const userUpdateValidation = z.object({
+const userUpdateValidationSchema = z.object({
   name: z
     .string({ message: "Name must be string" })
     .min(4, { message: "Name length cant be less than 4" })
@@ -38,6 +38,6 @@ const userUpdateValidation = z.object({
 });
 
 export const UserValidation = {
-  userCreationValidation,
-  userUpdateValidation,
+  userCreationValidationSchema,
+  userUpdateValidationSchema,
 };
