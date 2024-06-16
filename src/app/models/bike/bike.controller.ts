@@ -20,6 +20,7 @@ const getSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const result = await BikeServices.getSingleBikeFromDB(id);
+    console.log(result);
     if (result) {
       sendGenericSuccessfulResponse(res, {
         message: "Bike retrived successfully",
@@ -34,7 +35,8 @@ const getSingleBike = resolveRequestOrThrowError(
 const getAllBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await BikeServices.getAllBikeFromDB();
-    if (result) {
+    console.log(result);
+    if (result.length) {
       sendGenericSuccessfulResponse(res, {
         message: "Bikes retrived successfully",
         data: result,
