@@ -12,7 +12,9 @@ router.post(
 );
 
 router.get("/", BikeController.getAllBike);
-router.get("/bikeId", BikeController.getSingleBike);
+
+router.get("/:id", BikeController.getSingleBike);
+
 router.put(
   "/:id",
   validateRequestPayloadWithSchema(BikeValidation.bikeUpdateValidationSchema),

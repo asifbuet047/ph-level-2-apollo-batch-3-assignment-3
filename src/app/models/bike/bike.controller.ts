@@ -1,16 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { resolveRequestOrThrowError } from "../../utils/resolveRequestOrThrowError";
 import { BikeServices } from "./bike.services";
-import { sendGenericResponse } from "../../utils/sendGenericResponse";
+import { sendGenericSuccessfulResponse } from "../../utils/sendGenericResponse";
 import NoDataFoundError from "../../errorHandlers/NoDataFoundError";
 
 const createSinglebike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await BikeServices.createSingleBikeIntoDB(req.body);
     if (result) {
-      res.status(200).json({
-        success: true,
-        statusCode: 200,
+      sendGenericSuccessfulResponse(res, {
         message: "Bike added successfully",
         data: result,
       });
@@ -20,10 +18,13 @@ const createSinglebike = resolveRequestOrThrowError(
 
 const getSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { bikeId: id } = req.params;
+    const { id } = req.params;
     const result = await BikeServices.getSingleBikeFromDB(id);
     if (result) {
-      sendGenericResponse(true, 200, "Bike retrived successfully", result);
+      sendGenericSuccessfulResponse(res, {
+        message: "Bike retrived successfully",
+        data: result,
+      });
     } else {
       throw new NoDataFoundError("No Data Found");
     }
@@ -34,7 +35,10 @@ const getAllBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await BikeServices.getAllBikeFromDB();
     if (result) {
-      sendGenericResponse(true, 200, "Bikes retrived successfully", result);
+      sendGenericSuccessfulResponse(res, {
+        message: "Bikes retrived successfully",
+        data: result,
+      });
     } else {
       throw new NoDataFoundError("No Data Found");
     }
@@ -46,7 +50,10 @@ const updateSingleBike = resolveRequestOrThrowError(
     const { id } = req.params;
     const result = await BikeServices.updateBikeIntoDB(id, req.body);
     if (result) {
-      sendGenericResponse(true, 200, "Bike updated successfully", result);
+      sendGenericSuccessfulResponse(res, {
+        message: "Bike updated successfully",
+        data: result,
+      });
     } else {
       throw new NoDataFoundError("No Data Found");
     }
@@ -55,10 +62,15 @@ const updateSingleBike = resolveRequestOrThrowError(
 
 const deleteSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { bikeId: id } = req.params;
+    const { id } = req.params;
+    console.log(id);
     const result = await BikeServices.deleteSingleBikeFromDB(id);
+    console.log(result);
     if (result) {
-      sendGenericResponse(true, 200, "Bike deleted successfully", result);
+      sendGenericSuccessfulResponse(res, {
+        message: "Bike deleted successfully",
+        data: result,
+      });
     } else {
       throw new NoDataFoundError("No Data Found");
     }

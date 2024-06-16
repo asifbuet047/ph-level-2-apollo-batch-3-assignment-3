@@ -23,6 +23,12 @@ export const globalErrorHandler = (
     const zodError = zodErrorHandler(error);
     message = zodError.message;
     errorSources = zodError.errorMessages;
+    return res.status(400).json({
+      success: false,
+      message,
+      errorMessage: errorSources,
+      stack: "error stack",
+    });
   } else if (error instanceof NoDataFoundError) {
     message = "No Data Found";
     return res.status(404).json({
