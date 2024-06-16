@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { TUSer } from "./user.interface";
+import bcrypt from "bcrypt";
+import config from "../../config/config";
 
 const userSchema = new Schema<TUSer>(
   {
@@ -31,7 +33,14 @@ const userSchema = new Schema<TUSer>(
   },
   {
     timestamps: true,
-  },
+  }
 );
+
+userSchema.pre("save", async function (next) {
+  const user = this;
+  const hash = await bcrypt.hash(user.password, Number(config.default_salt));
+  user.password = hash;
+  next();
+});
 
 export const UserModel = mongoose.model<TUSer>("user", userSchema);
