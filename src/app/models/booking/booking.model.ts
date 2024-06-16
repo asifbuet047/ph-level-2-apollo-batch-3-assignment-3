@@ -27,7 +27,6 @@ const bookingSchema = new Schema<TBooking>({
   },
   isReturned: {
     type: Schema.Types.Boolean,
-    required: true,
     default: false,
   },
 });
