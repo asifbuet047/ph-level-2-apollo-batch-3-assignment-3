@@ -3,14 +3,19 @@ import { AuthController } from "./auth.controller";
 import { validateRequestPayloadWithSchema } from "../../middlewires/validateRequestPayloadWithSchema";
 import { UserValidation } from "../user/user.validation";
 
-const route = express.Router();
+const router = express.Router();
 
-route.post(
+router.post(
   "/signup",
   validateRequestPayloadWithSchema(UserValidation.userCreationValidationSchema),
   AuthController.signpValidUser
 );
 
-export const AuthRoute = {
-  route,
+router.post(
+  "/login",
+  validateRequestPayloadWithSchema(UserValidation.userLoginValidationSchema)
+);
+
+export const AuthRouter = {
+  router,
 };
