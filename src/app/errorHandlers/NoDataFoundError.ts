@@ -1,5 +1,5 @@
 class NoDataFoundError extends Error {
-  public statusCode: number = 404;
+  public statusCode: number;
   public message: string;
 
   constructor(message: string, statusCode: number, stack: string = "") {

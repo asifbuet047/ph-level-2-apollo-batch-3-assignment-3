@@ -34,6 +34,7 @@ const loginValidUserByCredentialsStoredInDB = async (
       const jwtToken = jwt.sign(userCredential, config.jwt_secret_key, {
         expiresIn: "10h",
       });
+      
       return {
         data: exitsUser,
         token: jwtToken,

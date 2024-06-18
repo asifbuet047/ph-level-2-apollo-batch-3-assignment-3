@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
 
-class DuplicateUserError extends Error {
+class AuthenticationError extends Error {
   public statusCode: number;
   public message: string;
 
   constructor(
-    message: string = "Same resource already exits",
-    statusCode: number = httpStatus.CONFLICT,
+    message: string = "Authentication failure. User credentails are mismatches",
+    statusCode: number = httpStatus.UNAUTHORIZED,
     stack: string = ""
   ) {
     super(message);
@@ -20,4 +20,4 @@ class DuplicateUserError extends Error {
   }
 }
 
-export default DuplicateUserError;
+export default AuthenticationError;

@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
 
-class DuplicateUserError extends Error {
+class AuthorizationError extends Error {
   public statusCode: number;
   public message: string;
 
   constructor(
-    message: string = "Same resource already exits",
-    statusCode: number = httpStatus.CONFLICT,
+    message: string = "Authorization failure. Current user does not have access requested resources",
+    statusCode: number = httpStatus.FORBIDDEN,
     stack: string = ""
   ) {
     super(message);
@@ -20,4 +20,4 @@ class DuplicateUserError extends Error {
   }
 }
 
-export default DuplicateUserError;
+export default AuthorizationError;

@@ -5,6 +5,7 @@ import { zodErrorHandler } from "./zodErrorHandler";
 import { TErrorSources } from "./errorResponse.interface";
 import NoDataFoundError from "./NoDataFoundError";
 import DuplicateUserError from "./DuplicateUserError";
+import AuthenticationError from "./AuthenticationError";
 
 export const globalErrorHandler = (
   error: Error,
@@ -37,7 +38,12 @@ export const globalErrorHandler = (
       data: [],
     });
   } else if (error instanceof DuplicateUserError) {
-    //message = "No Data Found";
+    return res.status(error.statusCode).json({
+      success: false,
+      message: error.message,
+      data: [],
+    });
+  } else if (error instanceof AuthenticationError) {
     return res.status(error.statusCode).json({
       success: false,
       message: error.message,
