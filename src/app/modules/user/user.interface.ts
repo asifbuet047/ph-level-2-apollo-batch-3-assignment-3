@@ -1,3 +1,8 @@
+export type TUserCredentials = {
+  email: string;
+  password: string;
+};
+
 export type TUSer = {
   name: string;
   email: string;

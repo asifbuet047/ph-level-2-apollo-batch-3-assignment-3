@@ -31,15 +31,14 @@ export const globalErrorHandler = (
       stack: "error stack",
     });
   } else if (error instanceof NoDataFoundError) {
-    // message = "No Data Found";
-    return res.status(404).json({
+    return res.status(error.statusCode).json({
       success: false,
       message: error.message,
       data: [],
     });
   } else if (error instanceof DuplicateUserError) {
     //message = "No Data Found";
-    return res.status(404).json({
+    return res.status(error.statusCode).json({
       success: false,
       message: error.message,
       data: [],

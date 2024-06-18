@@ -26,7 +26,7 @@ const getSingleBike = resolveRequestOrThrowError(
         data: result,
       });
     } else {
-      throw new NoDataFoundError("No Data Found");
+      throw new NoDataFoundError("No Data Found", 403);
     }
   }
 );
@@ -40,7 +40,7 @@ const getAllBike = resolveRequestOrThrowError(
         data: result,
       });
     } else {
-      throw new NoDataFoundError("No Data Found");
+      throw new NoDataFoundError("No Data Found", 403);
     }
   }
 );
@@ -55,7 +55,7 @@ const updateSingleBike = resolveRequestOrThrowError(
         data: result,
       });
     } else {
-      throw new NoDataFoundError("No Data Found");
+      throw new NoDataFoundError("No Data Found", 403);
     }
   }
 );
@@ -71,7 +71,7 @@ const deleteSingleBike = resolveRequestOrThrowError(
         data: result,
       });
     } else {
-      throw new NoDataFoundError("No Data Found");
+      throw new NoDataFoundError("No Data Found", 403);
     }
   }
 );

@@ -19,7 +19,7 @@ const getAllUser = resolveRequestOrThrowError(
         200
       );
     } else {
-      throw new NoDataFoundError("No data found");
+      throw new NoDataFoundError("No data found",403);
     }
   }
 );
@@ -38,7 +38,7 @@ const getSingleUser = resolveRequestOrThrowError(
         200
       );
     } else {
-      throw new NoDataFoundError("No data found");
+      throw new NoDataFoundError("No data found",403);
     }
   }
 );

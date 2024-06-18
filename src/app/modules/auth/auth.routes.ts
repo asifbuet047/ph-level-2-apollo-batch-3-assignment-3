@@ -13,7 +13,8 @@ router.post(
 
 router.post(
   "/login",
-  validateRequestPayloadWithSchema(UserValidation.userLoginValidationSchema)
+  validateRequestPayloadWithSchema(UserValidation.userLoginValidationSchema),
+  AuthController.loginValidUser
 );
 
 export const AuthRouter = {

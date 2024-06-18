@@ -23,7 +23,7 @@ const getAllBooking = resolveRequestOrThrowError(
         data: result,
       });
     } else {
-      throw new NoDataFoundError("No Data Found");
+      throw new NoDataFoundError("No Data Found", 403);
     }
   }
 );

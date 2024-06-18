@@ -17,6 +17,23 @@ const signpValidUser = resolveRequestOrThrowError(
   }
 );
 
+const loginValidUser = resolveRequestOrThrowError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AuthServices.loginValidUserByCredentialsStoredInDB(
+      req.body
+    );
+    sendGenericSuccessfulResponse(
+      res,
+      {
+        message: "User logged in successfully",
+        data: result,
+      },
+      200
+    );
+  }
+);
+
 export const AuthController = {
   signpValidUser,
+  loginValidUser,
 };
