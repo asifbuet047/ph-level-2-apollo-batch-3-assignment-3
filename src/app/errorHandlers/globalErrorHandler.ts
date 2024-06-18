@@ -6,6 +6,7 @@ import { TErrorSources } from "./errorResponse.interface";
 import NoDataFoundError from "./NoDataFoundError";
 import DuplicateUserError from "./DuplicateUserError";
 import AuthenticationError from "./AuthenticationError";
+import AuthorizationError from "./AuthorizationError";
 
 export const globalErrorHandler = (
   error: Error,
@@ -44,6 +45,12 @@ export const globalErrorHandler = (
       data: [],
     });
   } else if (error instanceof AuthenticationError) {
+    return res.status(error.statusCode).json({
+      success: false,
+      message: error.message,
+      data: [],
+    });
+  } else if (error instanceof AuthorizationError) {
     return res.status(error.statusCode).json({
       success: false,
       message: error.message,
