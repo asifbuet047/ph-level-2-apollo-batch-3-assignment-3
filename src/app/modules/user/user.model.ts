@@ -37,9 +37,10 @@ const userSchema = new Schema<TUSer>(
 );
 
 userSchema.pre("save", async function (next) {
-  const user = this;
-  const hash = await bcrypt.hash(user.password, Number(config.default_salt));
-  user.password = hash;
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.default_salt_round)
+  );
   next();
 });
 

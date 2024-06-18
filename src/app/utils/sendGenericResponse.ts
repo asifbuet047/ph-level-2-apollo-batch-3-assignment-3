@@ -8,12 +8,22 @@ export type TGenericSuccessfulReponse<T> = {
 
 export const sendGenericSuccessfulResponse = <T>(
   res: Response,
-  data: TGenericSuccessfulReponse<T>
+  data: TGenericSuccessfulReponse<T>,
+  code?: number
 ) => {
-  res.status(httpStatus.OK).json({
-    success: true,
-    statusCode: 200,
-    message: data.message,
-    data: data.data,
-  });
+  if (code) {
+    res.status(httpStatus.CREATED).json({
+      success: true,
+      statusCode: code,
+      message: data.message,
+      data: data.data,
+    });
+  } else {
+    res.status(httpStatus.OK).json({
+      success: true,
+      statusCode: 200,
+      message: data.message,
+      data: data.data,
+    });
+  }
 };

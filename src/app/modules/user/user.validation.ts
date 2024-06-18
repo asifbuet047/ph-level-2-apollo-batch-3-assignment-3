@@ -6,7 +6,10 @@ const userCreationValidationSchema = z.object({
     .min(4, { message: "Name length cant be less than 4" })
     .max(20, { message: "Name length be more than 20" }),
   email: z
-    .string({ message: "Mail address must be needed" })
+    .string({
+      invalid_type_error: "Email must be string",
+      required_error: "Must be string",
+    })
     .email({ message: "Mail must be validate" }),
   password: z
     .string({ message: "Password must be included" })
@@ -37,7 +40,21 @@ const userUpdateValidationSchema = z.object({
   role: z.enum(["user", "admin"], { message: "Only user or admin" }).optional(),
 });
 
+const userLoginValidationSchema = z.object({
+  email: z
+    .string({
+      invalid_type_error: "Email must be string",
+      required_error: "Must be string",
+    })
+    .email({ message: "Mail must be validated" }),
+  password: z
+    .string({ message: "Password must be included" })
+    .min(5, { message: "Password length must be bat least 5" })
+    .max(20, { message: "Password length must be between 5 to 20" }),
+});
+
 export const UserValidation = {
   userCreationValidationSchema,
   userUpdateValidationSchema,
+  userLoginValidationSchema,
 };

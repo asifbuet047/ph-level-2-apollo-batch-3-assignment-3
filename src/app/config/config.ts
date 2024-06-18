@@ -8,5 +8,5 @@ export default {
   port: process.env.PORT as string,
   database_url: process.env.DATABASE_URL as string,
   default_password: process.env.DEFAULT_PASS as string,
-  default_salt: process.env.DEFAULT_SALT_ROUNDS as string,
+  default_salt_round: process.env.DEFAULT_SALT_ROUNDS as string,
 };
