@@ -3,15 +3,34 @@ import { resolveRequestOrThrowError } from "../../utils/resolveRequestOrThrowErr
 import { BikeServices } from "./bike.services";
 import { sendGenericSuccessfulResponse } from "../../utils/sendGenericResponse";
 import NoDataFoundError from "../../errorHandlers/NoDataFoundError";
+import AuthenticationError from "../../errorHandlers/AuthenticationError";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { TUserJwtPayload } from "../user/user.interface";
+import config from "../../config/config";
+import UnauthorizedRouteError from "../../errorHandlers/UnauthorizedRouteError";
 
 const createSinglebike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await BikeServices.createSingleBikeIntoDB(req.body);
-    if (result) {
-      sendGenericSuccessfulResponse(res, {
-        message: "Bike added successfully",
-        data: result,
-      });
+    const token = req.header("Authorization")?.split(" ")[1];
+    if (token) {
+      const decodedPayload: TUserJwtPayload = jwt.verify(
+        token as string,
+        config.jwt_secret_key
+      );
+
+      if (decodedPayload.role === "admin") {
+        const result = await BikeServices.createSingleBikeIntoDB(req.body);
+        if (result) {
+          sendGenericSuccessfulResponse(res, {
+            message: "Bike added successfully",
+            data: result,
+          });
+        }
+      } else {
+        throw new UnauthorizedRouteError();
+      }
+    } else {
+      throw new AuthenticationError();
     }
   }
 );

@@ -1,5 +1,9 @@
 import { JsonWebTokenError, sign } from "jsonwebtoken";
-import { TUSer, TUserCredentials } from "../user/user.interface";
+import {
+  TUSer,
+  TUserCredentials,
+  TUserJwtPayload,
+} from "../user/user.interface";
 import { UserModel } from "../user/user.model";
 import { UserServices } from "../user/user.services";
 import jwt from "jsonwebtoken";
@@ -23,26 +27,28 @@ const signupValidUserAndStoreIntoDB = async (userData: TUSer) => {
 const loginValidUserByCredentialsStoredInDB = async (
   userCredential: TUserCredentials
 ) => {
-  console.log(userCredential);
   const exitsUser = await UserServices.getSingleUserFromDB(
     userCredential.email as string
   );
   if (exitsUser) {
-    console.log(exitsUser);
     const hashedPassword = exitsUser.password;
+
     const isValid = await bcrypt.compare(
       userCredential.password as string,
       hashedPassword
     );
+
+    const payLoad: TUserJwtPayload = {
+      email: userCredential.email,
+      role: exitsUser.role,
+    };
+
     if (isValid) {
       try {
-        const jwtToken = jwt.sign(
-          { email: userCredential.email },
-          config.jwt_secret_key,
-          {
-            expiresIn: "2h",
-          }
-        );
+        console.log(payLoad);
+        const jwtToken = jwt.sign(payLoad, config.jwt_secret_key, {
+          expiresIn: "2h",
+        });
         const { password, createdAt, updatedAt, __v, ...loggedinUser } =
           exitsUser;
         return {
@@ -50,7 +56,9 @@ const loginValidUserByCredentialsStoredInDB = async (
           token: jwtToken,
         };
       } catch (error) {
-        throw new JsonWebTokenError("JWT token error");
+        throw new JsonWebTokenError(
+          "Authorization error. JWT token is invalid"
+        );
       }
     } else {
       throw new AuthenticationError();

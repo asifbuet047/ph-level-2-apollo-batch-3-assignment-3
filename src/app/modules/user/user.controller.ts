@@ -6,7 +6,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { sendGenericSuccessfulResponse } from "../../utils/sendGenericResponse";
 import NoDataFoundError from "../../errorHandlers/NoDataFoundError";
-import { TUserCredentials } from "./user.interface";
+import { TUserCredentials, TUserJwtPayload } from "./user.interface";
 import config from "../../config/config";
 
 const getAllUserProfiles = resolveRequestOrThrowError(
@@ -32,14 +32,14 @@ const getLoggedInUserProfile = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const authorizationHeader = req.header("Authorization");
 
-    const userCredential = jwt.verify(
-      authorizationHeader?.split(" ")[1] as string,
+    const decodedPayload: TUserJwtPayload = jwt.verify(
+      authorizationHeader?.split(" ")[1] as string, 
       config.jwt_secret_key
     );
 
     const result =
       await UserServices.getSingleUserFromDbExcludingHashedPassword(
-        userCredential?.email
+        decodedPayload?.email
       );
 
     if (result) {
@@ -66,7 +66,6 @@ const updateLoggedInUserProfile = resolveRequestOrThrowError(
       config.jwt_secret_key
     );
 
-    console.log(userCredential.email);
     const updatedUser = await UserServices.updateSingleUserIntoDB(
       userCredential?.email,
       req.body
