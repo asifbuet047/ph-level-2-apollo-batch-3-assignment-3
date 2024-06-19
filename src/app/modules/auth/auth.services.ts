@@ -8,6 +8,7 @@ import DuplicateUserError from "../../errorHandlers/DuplicateUserError";
 import NoDataFoundError from "../../errorHandlers/NoDataFoundError";
 import config from "../../config/config";
 import httpStatus from "http-status";
+import AuthenticationError from "../../errorHandlers/AuthenticationError";
 
 const signupValidUserAndStoreIntoDB = async (userData: TUSer) => {
   const exitsUser = await UserServices.getSingleUserFromDB(userData.email);
@@ -34,9 +35,13 @@ const loginValidUserByCredentialsStoredInDB = async (
       hashedPassword
     );
     if (isValid) {
-      const jwtToken = jwt.sign(userCredential, config.jwt_secret_key, {
-        expiresIn: "10h",
-      });
+      const jwtToken = jwt.sign(
+        { email: userCredential.email },
+        config.jwt_secret_key,
+        {
+          expiresIn: "2h",
+        }
+      );
       const { password, createdAt, updatedAt, __v, ...loggedinUser } =
         exitsUser;
       return {
@@ -44,10 +49,7 @@ const loginValidUserByCredentialsStoredInDB = async (
         token: jwtToken,
       };
     } else {
-      return {
-        data: null,
-        token: null,
-      };
+      throw new AuthenticationError();
     }
   } else {
     throw new NoDataFoundError("User is not registered", httpStatus.NOT_FOUND);
