@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import DuplicateUserError from "../../errorHandlers/DuplicateUserError";
 import NoDataFoundError from "../../errorHandlers/NoDataFoundError";
 import config from "../../config/config";
+import httpStatus from "http-status";
 
 const signupValidUserAndStoreIntoDB = async (userData: TUSer) => {
   const exitsUser = await UserServices.getSingleUserFromDB(userData.email);
@@ -25,18 +26,20 @@ const loginValidUserByCredentialsStoredInDB = async (
     userCredential.email as string
   );
   if (exitsUser) {
-    const hashedPaaword = exitsUser.password;
+    console.log(exitsUser);
+    const hashedPassword = exitsUser.password;
     const isValid = await bcrypt.compare(
       userCredential.password as string,
-      hashedPaaword
+      hashedPassword
     );
     if (isValid) {
       const jwtToken = jwt.sign(userCredential, config.jwt_secret_key, {
         expiresIn: "10h",
       });
-
+      const { password, createdAt, updatedAt, __v, ...loggedinUser } =
+        exitsUser;
       return {
-        data: exitsUser,
+        data: loggedinUser,
         token: jwtToken,
       };
     } else {
@@ -46,7 +49,7 @@ const loginValidUserByCredentialsStoredInDB = async (
       };
     }
   } else {
-    throw new NoDataFoundError("User is not registered", 404);
+    throw new NoDataFoundError("User is not registered", httpStatus.NOT_FOUND);
   }
 };
 

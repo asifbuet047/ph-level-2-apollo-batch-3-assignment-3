@@ -20,12 +20,12 @@ const createUserIntoDB = async (user: TUSer) => {
 };
 
 const getAllUserFromDB = async () => {
-  const result = await UserModel.find();
+  const result = UserModel.find().lean();
   return result;
 };
 
 const getSingleUserFromDB = async (mail: string) => {
-  const result = await UserModel.findOne({ email: mail });
+  const result = await UserModel.findOne({ email: mail }).lean();
   return result;
 };
 

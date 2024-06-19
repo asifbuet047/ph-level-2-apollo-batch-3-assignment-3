@@ -12,10 +12,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", UserRouter.router);
 app.use("/api/bikes", BikeRouter.router);
 app.use("/api/rentals", BookingRouter.router);
 app.use("/api/auth", AuthRouter.router);
+app.use("/api/users",UserRouter.router)
 
 app.get("/", (req: Request, res: Response) => {
   res.send(getPackageName());

@@ -12,7 +12,7 @@ export const sendGenericSuccessfulResponse = <T>(
   code?: number
 ) => {
   if (code) {
-    res.status(httpStatus.CREATED).json({
+    res.status(code).json({
       success: true,
       statusCode: code,
       message: data.message,

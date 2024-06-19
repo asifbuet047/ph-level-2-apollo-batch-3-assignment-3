@@ -26,14 +26,13 @@ const loginValidUser = resolveRequestOrThrowError(
     );
     if (result.token) {
       res.setHeader("Authorization", `Bearer ${result.token}`);
-      sendGenericSuccessfulResponse(
-        res,
-        {
-          message: "User logged in successfully",
-          data: result.data,
-        },
-        httpStatus.OK
-      );
+      res.status(httpStatus.OK).json({
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "User logged in successfully",
+        token: result.token,
+        data: result.data,
+      });
     } else {
       throw new AuthenticationError();
     }
