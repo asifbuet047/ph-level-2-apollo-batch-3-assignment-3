@@ -3,16 +3,16 @@ import { BikeModel } from "./bike.model";
 
 const createSingleBikeIntoDB = async (bike: TBike) => {
   const result = await BikeModel.create(bike);
-  return result;
+  const pojo = result.toJSON();
+  const { __v, ...final } = pojo;
+  return final;
 };
 
 const getAllBikeFromDB = async () => {
   const result = await BikeModel.find();
   const refinedResult = result.map((bike) => {
     const pojo = bike.toJSON();
-    console.log(pojo);
     const { __v, ...final } = pojo;
-    console.log(final);
     return final;
   });
   return refinedResult;

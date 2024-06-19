@@ -66,15 +66,28 @@ const getAllBike = resolveRequestOrThrowError(
 
 const updateSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    const result = await BikeServices.updateBikeIntoDB(id, req.body);
-    if (result) {
-      sendGenericSuccessfulResponse(res, {
-        message: "Bike updated successfully",
-        data: result,
-      });
+    const token = req.header("Authorization")?.split(" ")[1];
+    if (token) {
+      const decodedPayload: TUserJwtPayload = jwt.verify(
+        token as string,
+        config.jwt_secret_key
+      );
+      if (decodedPayload.role === "admin") {
+        const { id } = req.params;
+        const result = await BikeServices.updateBikeIntoDB(id, req.body);
+        if (result) {
+          sendGenericSuccessfulResponse(res, {
+            message: "Bike updated successfully",
+            data: result,
+          });
+        } else {
+          throw new NoDataFoundError("No Data Found", 403);
+        }
+      } else {
+        throw new UnauthorizedRouteError();
+      }
     } else {
-      throw new NoDataFoundError("No Data Found", 403);
+      throw new AuthenticationError();
     }
   }
 );
