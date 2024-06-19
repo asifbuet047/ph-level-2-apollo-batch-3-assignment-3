@@ -29,7 +29,7 @@ const getSingleUserFromDB = async (mail: string) => {
   return result;
 };
 
-const getSingleUserFromDBExcludeHashedPassword = async (mail: string) => {
+const getSingleUserFromDbExcludingHashedPassword = async (mail: string) => {
   const result = await UserModel.findOne(
     { email: mail },
     { password: false, __v: false }
@@ -37,9 +37,20 @@ const getSingleUserFromDBExcludeHashedPassword = async (mail: string) => {
   return result;
 };
 
+const updateSingleUserIntoDB = async (
+  email: string,
+  updatedUserData: Partial<TUSer>
+) => {
+  const result = await UserModel.findOneAndUpdate({ email }, updatedUserData, {
+    new: true,
+  }).lean();
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
-  getSingleUserFromDBExcludeHashedPassword,
+  getSingleUserFromDbExcludingHashedPassword,
+  updateSingleUserIntoDB,
 };

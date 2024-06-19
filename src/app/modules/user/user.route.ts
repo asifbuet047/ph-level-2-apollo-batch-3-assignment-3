@@ -6,6 +6,7 @@ import { UserValidation } from "./user.validation";
 const router = express.Router();
 
 router.get("/me", UserController.getLoggedInUserProfile);
+router.put("/me", UserController.updateLoggedInUserProfile);
 
 export const UserRouter = {
   router,
