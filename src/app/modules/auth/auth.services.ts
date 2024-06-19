@@ -1,4 +1,4 @@
-import { sign } from "jsonwebtoken";
+import { JsonWebTokenError, sign } from "jsonwebtoken";
 import { TUSer, TUserCredentials } from "../user/user.interface";
 import { UserModel } from "../user/user.model";
 import { UserServices } from "../user/user.services";
@@ -35,19 +35,23 @@ const loginValidUserByCredentialsStoredInDB = async (
       hashedPassword
     );
     if (isValid) {
-      const jwtToken = jwt.sign(
-        { email: userCredential.email },
-        config.jwt_secret_key,
-        {
-          expiresIn: "2h",
-        }
-      );
-      const { password, createdAt, updatedAt, __v, ...loggedinUser } =
-        exitsUser;
-      return {
-        data: loggedinUser,
-        token: jwtToken,
-      };
+      try {
+        const jwtToken = jwt.sign(
+          { email: userCredential.email },
+          config.jwt_secret_key,
+          {
+            expiresIn: "2h",
+          }
+        );
+        const { password, createdAt, updatedAt, __v, ...loggedinUser } =
+          exitsUser;
+        return {
+          data: loggedinUser,
+          token: jwtToken,
+        };
+      } catch (error) {
+        throw new JsonWebTokenError("JWT token error");
+      }
     } else {
       throw new AuthenticationError();
     }

@@ -7,6 +7,7 @@ import NoDataFoundError from "./NoDataFoundError";
 import DuplicateUserError from "./DuplicateUserError";
 import AuthenticationError from "./AuthenticationError";
 import AuthorizationError from "./AuthorizationError";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 export const globalErrorHandler = (
   error: Error,
@@ -52,6 +53,12 @@ export const globalErrorHandler = (
     });
   } else if (error instanceof AuthorizationError) {
     return res.status(error.statusCode).json({
+      success: false,
+      message: error.message,
+      data: [],
+    });
+  } else if (error instanceof JsonWebTokenError) {
+    return res.status(400).json({
       success: false,
       message: error.message,
       data: [],
