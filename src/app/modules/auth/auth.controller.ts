@@ -14,7 +14,7 @@ const signpValidUser = resolveRequestOrThrowError(
         message: "User registered successfully",
         data: result,
       },
-      201
+      httpStatus.CREATED
     );
   }
 );
