@@ -8,6 +8,7 @@ import DuplicateUserError from "./DuplicateUserError";
 import AuthenticationError from "./AuthenticationError";
 import AuthorizationError from "./AuthorizationError";
 import { JsonWebTokenError } from "jsonwebtoken";
+import UnauthorizedRouteError from "./UnauthorizedRouteError";
 
 export const globalErrorHandler = (
   error: Error,
@@ -61,6 +62,12 @@ export const globalErrorHandler = (
     return res.status(400).json({
       success: false,
       message: `${error.message}. Token is not verified`,
+      data: [],
+    });
+  } else if (error instanceof UnauthorizedRouteError) {
+    return res.status(httpStatus.UNAUTHORIZED).json({
+      success: false,
+      message: `User type is not have permission to access this route`,
       data: [],
     });
   } else {

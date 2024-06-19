@@ -8,11 +8,18 @@ const createSingleBikeIntoDB = async (bike: TBike) => {
 
 const getAllBikeFromDB = async () => {
   const result = await BikeModel.find();
-  return result;
+  const refinedResult = result.map((bike) => {
+    const pojo = bike.toJSON();
+    console.log(pojo);
+    const { __v, ...final } = pojo;
+    console.log(final);
+    return final;
+  });
+  return refinedResult;
 };
 
 const getSingleBikeFromDB = async (bikeId: string) => {
-  const result = await BikeModel.findById(bikeId);
+  const result = await BikeModel.findById(bikeId, { __v: false });
   return result;
 };
 
