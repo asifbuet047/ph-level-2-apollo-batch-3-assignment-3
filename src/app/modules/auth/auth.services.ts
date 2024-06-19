@@ -22,6 +22,7 @@ const signupValidUserAndStoreIntoDB = async (userData: TUSer) => {
 const loginValidUserByCredentialsStoredInDB = async (
   userCredential: TUserCredentials
 ) => {
+  console.log(userCredential);
   const exitsUser = await UserServices.getSingleUserFromDB(
     userCredential.email as string
   );

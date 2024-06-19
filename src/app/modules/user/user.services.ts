@@ -29,8 +29,17 @@ const getSingleUserFromDB = async (mail: string) => {
   return result;
 };
 
+const getSingleUserFromDBExcludeHashedPassword = async (mail: string) => {
+  const result = await UserModel.findOne(
+    { email: mail },
+    { password: false, __v: false }
+  ).lean();
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
+  getSingleUserFromDBExcludeHashedPassword,
 };
