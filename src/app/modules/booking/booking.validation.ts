@@ -12,14 +12,20 @@ const timeDateStringValidationSchema = z.string().refine(
 );
 
 const bookingCreationSchema = z.object({
-  userId: z.string({ message: "userId is mujst when creating booking" }),
-  bikeId: z.string({ message: "bikeId is mujst when creating booking" }),
+  userId: z.string({ message: "userId is must when creating booking" }),
+  bikeId: z.string({ message: "bikeId is must when creating booking" }),
   startTime: timeDateStringValidationSchema,
   returnTime: timeDateStringValidationSchema,
   totalCost: z.number({ message: "totast cost is required" }),
   isReturned: z.boolean({ message: "isReturn is boolean" }).optional(),
 });
 
+const rentalRequestValidationSchema = z.object({
+  bikeId: z.string({ message: "bikeId is must when creating booking" }),
+  startTime: timeDateStringValidationSchema,
+});
+
 export const BookingValidation = {
   bookingCreationSchema,
+  rentalRequestValidationSchema,
 };

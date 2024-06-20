@@ -9,6 +9,7 @@ import AuthenticationError from "./AuthenticationError";
 import AuthorizationError from "./AuthorizationError";
 import { JsonWebTokenError } from "jsonwebtoken";
 import UnauthorizedRouteError from "./UnauthorizedRouteError";
+import BikeNotAvailableError from "./BikeNotAvailableError";
 
 export const globalErrorHandler = (
   error: Error,
@@ -68,6 +69,12 @@ export const globalErrorHandler = (
     return res.status(httpStatus.UNAUTHORIZED).json({
       success: false,
       message: `User type is not have permission to access this route`,
+      data: [],
+    });
+  } else if (error instanceof BikeNotAvailableError) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      success: false,
+      message: `Bike not available`,
       data: [],
     });
   } else {

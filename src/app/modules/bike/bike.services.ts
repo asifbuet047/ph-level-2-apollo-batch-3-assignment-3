@@ -19,7 +19,7 @@ const getAllBikeFromDB = async () => {
 };
 
 const getSingleBikeFromDB = async (bikeId: string) => {
-  const result = await BikeModel.findById(bikeId, { __v: false });
+  const result = await BikeModel.findById(bikeId, { __v: false }).lean();
   return result;
 };
 
@@ -29,12 +29,14 @@ const updateBikeIntoDB = async (
 ) => {
   const result = await BikeModel.findByIdAndUpdate(bikeId, updatedBike, {
     new: true,
-  });
+  }).lean();
   return result;
 };
 
 const deleteSingleBikeFromDB = async (bikeId: string) => {
-  const result = await BikeModel.findByIdAndDelete(bikeId);
+  const result = await BikeModel.findByIdAndDelete(bikeId, {
+    new: true,
+  }).lean();
   return result;
 };
 

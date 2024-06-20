@@ -4,7 +4,9 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 const createBookingIntoDB = async (booking: TBooking) => {
   const result = await BookingModel.create(booking);
-  return result;
+  const pojo = result.toJSON();
+  const { __v, ...final } = pojo;
+  return final;
 };
 
 const getAllBookingFromDB = async () => {

@@ -7,7 +7,9 @@ const router = express.Router();
 
 router.post(
   "/",
-  validateRequestPayloadWithSchema(BookingValidation.bookingCreationSchema),
+  validateRequestPayloadWithSchema(
+    BookingValidation.rentalRequestValidationSchema
+  ),
   BookingController.createBooking
 );
 
