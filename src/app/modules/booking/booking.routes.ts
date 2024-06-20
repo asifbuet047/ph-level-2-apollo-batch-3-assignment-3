@@ -8,7 +8,7 @@ const router = express.Router();
 router.post(
   "/",
   validateRequestPayloadWithSchema(BookingValidation.bookingCreationSchema),
-  BookingController.createBooing
+  BookingController.createBooking
 );
 
 router.get("/", BookingController.getAllBooking);

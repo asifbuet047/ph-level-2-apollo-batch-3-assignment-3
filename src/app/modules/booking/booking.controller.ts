@@ -4,7 +4,7 @@ import { BookingServices } from "./booking.services";
 import { sendGenericSuccessfulResponse } from "../../utils/sendGenericResponse";
 import NoDataFoundError from "../../errorHandlers/NoDataFoundError";
 
-const createBooing = resolveRequestOrThrowError(
+const createBooking = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await BookingServices.createBookingIntoDB(req.body);
     sendGenericSuccessfulResponse(res, {
@@ -29,6 +29,6 @@ const getAllBooking = resolveRequestOrThrowError(
 );
 
 export const BookingController = {
-  createBooing,
+  createBooking,
   getAllBooking,
 };
