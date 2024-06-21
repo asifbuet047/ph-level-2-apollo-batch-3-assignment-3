@@ -60,7 +60,27 @@ const getAllBooking = resolveRequestOrThrowError(
   }
 );
 
+const updateSingleBooking = resolveRequestOrThrowError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.params);
+    const result = await BookingServices.updateBookingIntoDB(req.params.id);
+    if (result) {
+      sendGenericSuccessfulResponse(
+        res,
+        {
+          message: "Bike return successfully",
+          data: result,
+        },
+        httpStatus.OK
+      );
+    } else {
+      throw new NoDataFoundError("No Data Found", 403);
+    }
+  }
+);
+
 export const BookingController = {
   createBooking,
   getAllBooking,
+  updateSingleBooking,
 };

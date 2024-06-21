@@ -22,62 +22,64 @@ const createBookingIntoDB = async (
     console.log("Start transaction");
 
     const bikeId = booking.bikeId;
-    // const isBikeExits = await BikeServices.getSingleBikeFromDB(
-    //   bikeId.toString()
-    // );
-    // if (isBikeExits) {
-    // if (isBikeExits.isAvailable) {
-    const user =
-      await UserServices.getSingleUserFromDbExcludingHashedPassword(userEmail);
-
-    if (user) {
-      const booking: TBooking = {
-        userId: user._id,
-        bikeId: bikeId,
-        startTime: new Date(),
-      };
-      const rent = await BookingModel.create([booking], {
-        session: mongooseTransactionSession,
-      });
-      if (rent.length) {
-        const isChangeAvailability = await BikeModel.findByIdAndUpdate(
-          [bikeId],
-          {
-            isAvailable: false,
-          },
-          {
-            session: mongooseTransactionSession,
-            new: true,
-          }
-        );
-        console.log(isChangeAvailability);
-        if (isChangeAvailability) {
-          await mongooseTransactionSession.commitTransaction();
-          console.log("Abort tranaction after successful operation");
-          await mongooseTransactionSession.endSession();
-          console.log("End session after successful opearation");
-          return rent[0];
-        } else {
-          throw new DatabaseOperationFailedError(
-            "Bike document write failed into DB",
-            httpStatus.FAILED_DEPENDENCY
+    const isBikeExits = await BikeServices.getSingleBikeFromDB(
+      bikeId.toString()
+    );
+    if (isBikeExits) {
+      if (isBikeExits.isAvailable) {
+        const user =
+          await UserServices.getSingleUserFromDbExcludingHashedPassword(
+            userEmail
           );
+
+        if (user) {
+          const bookingData: TBooking = {
+            userId: user._id,
+            bikeId: bikeId,
+            startTime: booking.startTime,
+          };
+          const rent = await BookingModel.create([bookingData], {
+            session: mongooseTransactionSession,
+          });
+          if (rent.length) {
+            const isChangeAvailability = await BikeModel.findByIdAndUpdate(
+              [bikeId],
+              {
+                isAvailable: false,
+              },
+              {
+                session: mongooseTransactionSession,
+                new: true,
+              }
+            );
+            console.log(isChangeAvailability);
+            if (isChangeAvailability) {
+              await mongooseTransactionSession.commitTransaction();
+              console.log("Abort tranaction after successful operation");
+              await mongooseTransactionSession.endSession();
+              console.log("End session after successful opearation");
+              return rent[0];
+            } else {
+              throw new DatabaseOperationFailedError(
+                "Bike database write failed",
+                httpStatus.FAILED_DEPENDENCY
+              );
+            }
+          } else {
+            throw new DatabaseOperationFailedError(
+              "Booking database write failed",
+              httpStatus.FAILED_DEPENDENCY
+            );
+          }
+        } else {
+          throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
         }
       } else {
-        throw new DatabaseOperationFailedError(
-          "Booking document write failed into DB",
-          httpStatus.FAILED_DEPENDENCY
-        );
+        throw new BikeNotAvailableError();
       }
     } else {
-      throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
+      throw new NoBikeFoundError();
     }
-    // } else {
-    //   throw new BikeNotAvailableError();
-    // }
-    // } else {
-    //   throw new NoBikeFoundError();
-    // }
   } catch (error) {
     await mongooseTransactionSession.abortTransaction();
     console.log("Abort transaction after error");
@@ -96,6 +98,59 @@ const updateBookingIntoDB = async (booingId: string) => {
   const mongooseTransactionSession = await mongoose.startSession();
   try {
     mongooseTransactionSession.startTransaction();
+    console.log("Start transaction");
+    const existingBooking = await BookingModel.findById(booingId, {
+      session: mongooseTransactionSession,
+    }).lean();
+
+    console.log(existingBooking);
+    if (existingBooking) {
+      const returnTime = new Date();
+      const startTime = new Date(existingBooking?.startTime as Date);
+      const totalTimeInMiliseconds: number =
+        returnTime.getTime() - startTime.getTime();
+      const totalTimeInHours = Math.floor(
+        totalTimeInMiliseconds / (1000 * 60 * 60)
+      );
+
+      const bikeInfo = await BikeModel.findById([existingBooking?.bikeId], {
+        session: mongooseTransactionSession,
+      });
+
+      if (bikeInfo) {
+        const totalCost = (bikeInfo?.pricePerHour as number) * totalTimeInHours;
+
+        const updateBooking = await BookingModel.findByIdAndUpdate(
+          [booingId],
+          {
+            returnTime,
+            totalCost,
+            isReturned: true,
+          },
+          {
+            session: mongooseTransactionSession,
+            new: true,
+          }
+        );
+
+        if (updateBooking) {
+          await mongooseTransactionSession.commitTransaction();
+          console.log("Abort tranaction after successful operation");
+          await mongooseTransactionSession.endSession();
+          console.log("End session after successful opearation");
+          return updateBooking;
+        } else {
+          throw new DatabaseOperationFailedError(
+            "Booking database update failed",
+            httpStatus.FAILED_DEPENDENCY
+          );
+        }
+      } else {
+        throw new NoBikeFoundError();
+      }
+    } else {
+      throw new NoDataFoundError("No booking found", httpStatus.NOT_FOUND);
+    }
   } catch (error) {
     await mongooseTransactionSession.abortTransaction();
     console.log("Abort transaction after error");
@@ -108,4 +163,5 @@ const updateBookingIntoDB = async (booingId: string) => {
 export const BookingServices = {
   createBookingIntoDB,
   getAllBookingFromDB,
+  updateBookingIntoDB,
 };
