@@ -10,6 +10,9 @@ import AuthorizationError from "./AuthorizationError";
 import { JsonWebTokenError } from "jsonwebtoken";
 import UnauthorizedRouteError from "./UnauthorizedRouteError";
 import BikeNotAvailableError from "./BikeNotAvailableError";
+import NoBikeFoundError from "./NoBikeFoundError";
+import mongoose from "mongoose";
+import mongooseErrorHandler from "./mongooseErrorHandler";
 
 export const globalErrorHandler = (
   error: Error,
@@ -30,6 +33,26 @@ export const globalErrorHandler = (
     message = zodError.message;
     errorSources = zodError.errorMessages;
     return res.status(400).json({
+      success: false,
+      message,
+      errorMessage: errorSources,
+      stack: "error stack",
+    });
+  } else if (error instanceof mongoose.Error.CastError) {
+    const castError = mongooseErrorHandler(error);
+    message = castError.message;
+    errorSources = castError.errorSources;
+    return res.status(castError.statusCode as number).json({
+      success: false,
+      message,
+      errorMessage: errorSources,
+      stack: "error stack",
+    });
+  } else if (error instanceof mongoose.Error.ValidationError) {
+    const castError = mongooseErrorHandler(error);
+    message = castError.message;
+    errorSources = castError.errorSources;
+    return res.status(castError.statusCode as number).json({
       success: false,
       message,
       errorMessage: errorSources,
@@ -74,7 +97,13 @@ export const globalErrorHandler = (
   } else if (error instanceof BikeNotAvailableError) {
     return res.status(httpStatus.NOT_FOUND).json({
       success: false,
-      message: `Bike not available`,
+      message: error.message,
+      data: [],
+    });
+  } else if (error instanceof NoBikeFoundError) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      success: false,
+      message: error.message,
       data: [],
     });
   } else {

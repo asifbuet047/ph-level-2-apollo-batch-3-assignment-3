@@ -25,66 +25,23 @@ const createBooking = resolveRequestOrThrowError(
     const decodedPayload: TUserJwtPayload = jwt.verify(
       authorizationHeader?.split(" ")[1] as string,
       config.jwt_secret_key
-    );
+    ) as TUserJwtPayload;
 
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    console.log("Tranasaction is started");
-    try {
-      const user =
-        await UserServices.getSingleUserFromDbExcludingHashedPassword(
-          decodedPayload.email
-        );
-
-      if (user) {
-        const bikeId = req.body?.bikeId;
-        const requestedBike = await BikeServices.getSingleBikeFromDB(bikeId);
-        if (requestedBike?.isAvailable) {
-          const booking: TBooking = {
-            userId: user._id,
-            bikeId: bikeId,
-            startTime: new Date(),
-          };
-          const rental = await BookingServices.createBookingIntoDB(booking);
-          if (rental) {
-            const bikeUpdate = await BikeServices.updateBikeIntoDB(bikeId, {
-              isAvailable: false,
-            });
-            if (!bikeUpdate?.isAvailable) {
-              sendGenericSuccessfulResponse(
-                res,
-                {
-                  message: "Rental created successfully",
-                  data: rental,
-                },
-                httpStatus.OK
-              );
-            } else {
-              throw new NoDataFoundError(
-                "No rental request created. Rental request terminated",
-                httpStatus.NOT_FOUND
-              );
-            }
-          } else {
-            throw new NoDataFoundError(
-              "No rental request created. Rental request terminated",
-              httpStatus.NOT_FOUND
-            );
-          }
-        } else {
-          throw new BikeNotAvailableError();
-        }
-      } else {
-        throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
-      }
-      await session.commitTransaction();
-      console.log("Tranasaction is committed");
-    } catch (error) {
-      await session.abortTransaction();
-      console.log("Tranasaction is aborted");
-      throw error;
-    } finally {
-      session.endSession();
+    if (decodedPayload?.email) {
+      const result = await BookingServices.createBookingIntoDB(
+        req.body,
+        decodedPayload.email
+      );
+      sendGenericSuccessfulResponse(
+        res,
+        {
+          message: "Rental created successfully",
+          data: result,
+        },
+        httpStatus.OK
+      );
+    } else {
+      throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
     }
   }
 );

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface TBookingRental {
-  userId: string;
+  bikeId: Types.ObjectId;
   startTime: Date;
 }
 

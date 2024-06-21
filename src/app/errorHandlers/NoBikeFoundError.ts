@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
 
-class BikeNotAvailableError extends Error {
+class NoBikeFoundError extends Error {
   public statusCode: number;
   public message: string;
 
   constructor(message?: string, statusCode?: number, stack: string = "") {
     super(message);
-    this.message = "Bike is not available for rent";
+    this.message = "Bike is not found";
     this.statusCode = httpStatus.NOT_FOUND;
     if (stack) {
       this.stack = stack;
@@ -16,4 +16,4 @@ class BikeNotAvailableError extends Error {
   }
 }
 
-export default BikeNotAvailableError;
+export default NoBikeFoundError;
