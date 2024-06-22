@@ -5,7 +5,6 @@ import config from "../config/config";
 import { TUserJwtPayload } from "../modules/user/user.interface";
 import AuthenticationError from "../errorHandlers/AuthenticationError";
 import UnauthorizedRouteError from "../errorHandlers/UnauthorizedRouteError";
-import AuthorizationError from "../errorHandlers/AuthorizationError";
 
 const checkTokenAndAllowIfAdmin: RequestHandler = (
   req: Request,
