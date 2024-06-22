@@ -19,7 +19,6 @@ const createBookingIntoDB = async (
   const mongooseTransactionSession = await mongoose.startSession();
   try {
     mongooseTransactionSession.startTransaction();
-    console.log("Start transaction");
 
     const bikeId = booking.bikeId;
     const isBikeExits = await BikeServices.getSingleBikeFromDB(
@@ -55,9 +54,7 @@ const createBookingIntoDB = async (
             console.log(isChangeAvailability);
             if (isChangeAvailability) {
               await mongooseTransactionSession.commitTransaction();
-              console.log("Abort tranaction after successful operation");
               await mongooseTransactionSession.endSession();
-              console.log("End session after successful opearation");
               return rent[0];
             } else {
               throw new DatabaseOperationFailedError(
@@ -82,9 +79,7 @@ const createBookingIntoDB = async (
     }
   } catch (error) {
     await mongooseTransactionSession.abortTransaction();
-    console.log("Abort transaction after error");
     await mongooseTransactionSession.endSession();
-    console.log("End session after error");
     throw error;
   }
 };
@@ -122,12 +117,11 @@ const updateBookingIntoDB = async (booingId: string) => {
   const mongooseTransactionSession = await mongoose.startSession();
   try {
     mongooseTransactionSession.startTransaction();
-    console.log("Start transaction");
-    console.log(booingId);
     const existingBooking = await getSingleBookingFromDB(booingId);
 
     if (existingBooking) {
       const returnTime = new Date();
+      returnTime.setHours(returnTime.getHours() + 6);
       const startTime = new Date(existingBooking?.startTime as Date);
       const totalTimeInMiliseconds: number =
         returnTime.getTime() - startTime.getTime();
@@ -166,9 +160,7 @@ const updateBookingIntoDB = async (booingId: string) => {
           ).lean();
           if (updateBike) {
             await mongooseTransactionSession.commitTransaction();
-            console.log("Abort tranaction after successful operation");
             await mongooseTransactionSession.endSession();
-            console.log("End session after successful opearation");
             return updateBooking;
           } else {
             throw new DatabaseOperationFailedError(
@@ -190,9 +182,7 @@ const updateBookingIntoDB = async (booingId: string) => {
     }
   } catch (error) {
     await mongooseTransactionSession.abortTransaction();
-    console.log("Abort transaction after error");
     await mongooseTransactionSession.endSession();
-    console.log("End session after error");
     throw error;
   }
 };
