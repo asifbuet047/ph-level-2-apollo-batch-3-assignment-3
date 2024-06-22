@@ -90,7 +90,11 @@ const createBookingIntoDB = async (
 };
 
 const getAllBookingFromDB = async () => {
-  const result = await BookingModel.find();
+  const result = await BookingModel.find().lean();
+  return result;
+};
+const getSingleBookingFromDB = async (id: string) => {
+  const result = await BookingModel.findById(id).lean();
   return result;
 };
 
@@ -99,11 +103,9 @@ const updateBookingIntoDB = async (booingId: string) => {
   try {
     mongooseTransactionSession.startTransaction();
     console.log("Start transaction");
-    const existingBooking = await BookingModel.findById(booingId, {
-      session: mongooseTransactionSession,
-    }).lean();
+    console.log(booingId);
+    const existingBooking = await getSingleBookingFromDB(booingId);
 
-    console.log(existingBooking);
     if (existingBooking) {
       const returnTime = new Date();
       const startTime = new Date(existingBooking?.startTime as Date);
@@ -113,9 +115,7 @@ const updateBookingIntoDB = async (booingId: string) => {
         totalTimeInMiliseconds / (1000 * 60 * 60)
       );
 
-      const bikeInfo = await BikeModel.findById([existingBooking?.bikeId], {
-        session: mongooseTransactionSession,
-      });
+      const bikeInfo = await BikeModel.findById(existingBooking?.bikeId).lean();
 
       if (bikeInfo) {
         const totalCost = (bikeInfo?.pricePerHour as number) * totalTimeInHours;
@@ -131,14 +131,31 @@ const updateBookingIntoDB = async (booingId: string) => {
             session: mongooseTransactionSession,
             new: true,
           }
-        );
+        ).lean();
 
         if (updateBooking) {
-          await mongooseTransactionSession.commitTransaction();
-          console.log("Abort tranaction after successful operation");
-          await mongooseTransactionSession.endSession();
-          console.log("End session after successful opearation");
-          return updateBooking;
+          const updateBike = await BikeModel.findByIdAndUpdate(
+            [bikeInfo._id],
+            {
+              isAvailable: true,
+            },
+            {
+              session: mongooseTransactionSession,
+              new: true,
+            }
+          ).lean();
+          if (updateBike) {
+            await mongooseTransactionSession.commitTransaction();
+            console.log("Abort tranaction after successful operation");
+            await mongooseTransactionSession.endSession();
+            console.log("End session after successful opearation");
+            return updateBooking;
+          } else {
+            throw new DatabaseOperationFailedError(
+              "Bike database update failed",
+              httpStatus.FAILED_DEPENDENCY
+            );
+          }
         } else {
           throw new DatabaseOperationFailedError(
             "Booking database update failed",

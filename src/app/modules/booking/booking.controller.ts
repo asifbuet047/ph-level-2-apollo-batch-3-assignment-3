@@ -62,7 +62,6 @@ const getAllBooking = resolveRequestOrThrowError(
 
 const updateSingleBooking = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.params);
     const result = await BookingServices.updateBookingIntoDB(req.params.id);
     if (result) {
       sendGenericSuccessfulResponse(
