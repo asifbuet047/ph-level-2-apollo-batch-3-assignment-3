@@ -89,10 +89,32 @@ const createBookingIntoDB = async (
   }
 };
 
-const getAllBookingFromDB = async () => {
+const getAllBookingsOfSingleUserFromDB = async (email: string) => {
+  const exitsUser = await UserServices.getSingleUserFromDB(email);
+  if (exitsUser) {
+    const userId = exitsUser._id;
+
+    const allBookings = await BookingModel.find({ userId }).lean();
+    if (allBookings.length) {
+      return allBookings;
+    } else {
+      throw new NoDataFoundError(
+        `User does not have any booking yet`,
+        httpStatus.NOT_FOUND
+      );
+    }
+  } else {
+    throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
+  }
+  const result = await BookingModel.find({ userId: email }).lean();
+  return result;
+};
+
+const getAllBookingsFromDB = async () => {
   const result = await BookingModel.find().lean();
   return result;
 };
+
 const getSingleBookingFromDB = async (id: string) => {
   const result = await BookingModel.findById(id).lean();
   return result;
@@ -179,6 +201,8 @@ const updateBookingIntoDB = async (booingId: string) => {
 
 export const BookingServices = {
   createBookingIntoDB,
-  getAllBookingFromDB,
+  getAllBookingsOfSingleUserFromDB,
+  getSingleBookingFromDB,
   updateBookingIntoDB,
+  getAllBookingsFromDB,
 };

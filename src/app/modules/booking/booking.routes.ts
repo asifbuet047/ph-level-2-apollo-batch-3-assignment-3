@@ -13,7 +13,7 @@ router.post(
   BookingController.createBooking
 );
 
-router.get("/", BookingController.getAllBooking);
+router.get("/", BookingController.getAllBookingsOfSingleUser);
 
 router.put("/:id/return", BookingController.updateSingleBooking);
 

@@ -1,18 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import { ZodError } from "zod";
-import { zodErrorHandler } from "./zodErrorHandler";
-import { TErrorSources } from "./errorResponse.interface";
-import NoDataFoundError from "./NoDataFoundError";
-import DuplicateUserError from "./DuplicateUserError";
-import AuthenticationError from "./AuthenticationError";
-import AuthorizationError from "./AuthorizationError";
+import { zodErrorHandler } from "../errorHandlers/zodErrorHandler";
+import { TErrorSources } from "../errorHandlers/errorResponse.interface";
+import NoDataFoundError from "../errorHandlers/NoDataFoundError";
+import DuplicateUserError from "../errorHandlers/DuplicateUserError";
+import AuthenticationError from "../errorHandlers/AuthenticationError";
+import AuthorizationError from "../errorHandlers/AuthorizationError";
 import { JsonWebTokenError } from "jsonwebtoken";
-import UnauthorizedRouteError from "./UnauthorizedRouteError";
-import BikeNotAvailableError from "./BikeNotAvailableError";
-import NoBikeFoundError from "./NoBikeFoundError";
+import UnauthorizedRouteError from "../errorHandlers/UnauthorizedRouteError";
+import BikeNotAvailableError from "../errorHandlers/BikeNotAvailableError";
+import NoBikeFoundError from "../errorHandlers/NoBikeFoundError";
 import mongoose from "mongoose";
-import mongooseErrorHandler from "./mongooseErrorHandler";
+import mongooseErrorHandler from "../errorHandlers/mongooseErrorHandler";
 
 export const globalErrorHandler = (
   error: Error,
