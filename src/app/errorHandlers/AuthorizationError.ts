@@ -6,7 +6,7 @@ class AuthorizationError extends Error {
 
   constructor(
     message: string = "Authorization failure. Current user does not have access requested resources",
-    statusCode: number = httpStatus.FORBIDDEN,
+    statusCode: number = httpStatus.UNAUTHORIZED,
     stack: string = ""
   ) {
     super(message);

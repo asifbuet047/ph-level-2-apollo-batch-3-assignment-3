@@ -11,26 +11,12 @@ import UnauthorizedRouteError from "../../errorHandlers/UnauthorizedRouteError";
 
 const createSinglebike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.header("Authorization")?.split(" ")[1];
-    if (token) {
-      const decodedPayload: TUserJwtPayload = jwt.verify(
-        token as string,
-        config.jwt_secret_key
-      ) as TUserJwtPayload;
-
-      if (decodedPayload.role === "admin") {
-        const result = await BikeServices.createSingleBikeIntoDB(req.body);
-        if (result) {
-          sendGenericSuccessfulResponse(res, {
-            message: "Bike added successfully",
-            data: result,
-          });
-        }
-      } else {
-        throw new UnauthorizedRouteError();
-      }
-    } else {
-      throw new AuthenticationError();
+    const result = await BikeServices.createSingleBikeIntoDB(req.body);
+    if (result) {
+      sendGenericSuccessfulResponse(res, {
+        message: "Bike added successfully",
+        data: result,
+      });
     }
   }
 );
@@ -50,7 +36,7 @@ const getSingleBike = resolveRequestOrThrowError(
   }
 );
 
-const getAllBike = resolveRequestOrThrowError(
+const getAllBikes = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await BikeServices.getAllBikeFromDB();
     if (result.length) {
@@ -66,52 +52,29 @@ const getAllBike = resolveRequestOrThrowError(
 
 const updateSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.header("Authorization")?.split(" ")[1];
-    if (token) {
-      const decodedPayload: TUserJwtPayload = jwt.verify(
-        token as string,
-        config.jwt_secret_key
-      ) as TUserJwtPayload;
-      if (decodedPayload.role === "admin") {
-        const { id } = req.params;
-        const result = await BikeServices.updateBikeIntoDB(id, req.body);
-        if (result) {
-          sendGenericSuccessfulResponse(res, {
-            message: "Bike updated successfully",
-            data: result,
-          });
-        } else {
-          throw new NoDataFoundError("No Data Found", 403);
-        }
-      } else {
-        throw new UnauthorizedRouteError();
-      }
+    const { id } = req.params;
+    const result = await BikeServices.updateBikeIntoDB(id, req.body);
+    if (result) {
+      sendGenericSuccessfulResponse(res, {
+        message: "Bike updated successfully",
+        data: result,
+      });
     } else {
-      throw new AuthenticationError();
+      throw new NoDataFoundError("No Data Found", 403);
     }
   }
 );
 
 const deleteSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    const token = req.header("Authorization")?.split(" ")[1];
-    if (token) {
-      const decodedPayload: TUserJwtPayload = jwt.verify(
-        token as string,
-        config.jwt_secret_key
-      ) as TUserJwtPayload;
-      if (decodedPayload.role === "admin") {
-        const result = await BikeServices.deleteSingleBikeFromDB(id);
-        if (result) {
-          sendGenericSuccessfulResponse(res, {
-            message: "Bike deleted successfully",
-            data: result,
-          });
-        } else {
-          throw new NoDataFoundError("No Bike Found", 403);
-        }
-      }
+    const result = await BikeServices.deleteSingleBikeFromDB(id);
+    if (result) {
+      sendGenericSuccessfulResponse(res, {
+        message: "Bike deleted successfully",
+        data: result,
+      });
+    } else {
+      throw new NoDataFoundError("No Bike Found", 403);
     }
   }
 );
@@ -119,7 +82,7 @@ const deleteSingleBike = resolveRequestOrThrowError(
 export const BikeController = {
   createSinglebike,
   getSingleBike,
-  getAllBike,
+  getAllBikes,
   updateSingleBike,
   deleteSingleBike,
 };

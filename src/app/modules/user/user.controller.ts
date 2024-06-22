@@ -33,9 +33,9 @@ const getLoggedInUserProfile = resolveRequestOrThrowError(
     const authorizationHeader = req.header("Authorization");
 
     const decodedPayload: TUserJwtPayload = jwt.verify(
-      authorizationHeader?.split(" ")[1] as string, 
+      authorizationHeader?.split(" ")[1] as string,
       config.jwt_secret_key
-    );
+    ) as TUserJwtPayload;
 
     const result =
       await UserServices.getSingleUserFromDbExcludingHashedPassword(

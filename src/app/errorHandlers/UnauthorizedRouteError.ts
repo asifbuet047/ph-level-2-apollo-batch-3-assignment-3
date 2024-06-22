@@ -5,7 +5,7 @@ class UnauthorizedRouteError extends Error {
   public message: string;
 
   constructor(
-    message: string = "User does not have access to this route",
+    message: string = "You have no access to this route",
     statusCode: number = httpStatus.UNAUTHORIZED,
     stack: string = ""
   ) {

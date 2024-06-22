@@ -4,9 +4,12 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
+    "build": "tsc",
     "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "lint": "eslint src --ignore-path .eslintignore --ext .ts",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+    "lint:fix": "npx eslint src --fix",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "format:fix": "npx prettier --write src"
   },
   "author": "asifbuet047@gmail.com",
   "license": "ISC",

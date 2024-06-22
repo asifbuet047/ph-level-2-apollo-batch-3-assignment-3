@@ -32,7 +32,7 @@ export const globalErrorHandler = (
     const zodError = zodErrorHandler(error);
     message = zodError.message;
     errorSources = zodError.errorMessages;
-    return res.status(400).json({
+    return res.status(httpStatus.BAD_REQUEST).json({
       success: false,
       message,
       errorMessage: errorSources,
@@ -91,8 +91,8 @@ export const globalErrorHandler = (
   } else if (error instanceof UnauthorizedRouteError) {
     return res.status(httpStatus.UNAUTHORIZED).json({
       success: false,
-      message: `User type is not have permission to access this route`,
-      data: [],
+      statusCode: error.statusCode,
+      message: error.message,
     });
   } else if (error instanceof BikeNotAvailableError) {
     return res.status(httpStatus.NOT_FOUND).json({

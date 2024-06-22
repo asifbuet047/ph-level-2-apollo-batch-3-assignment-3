@@ -19,30 +19,35 @@ import mongoose from "mongoose";
 import BikeNotAvailableError from "../../errorHandlers/BikeNotAvailableError";
 import AuthorizationError from "../../errorHandlers/AuthorizationError";
 import UnauthorizedRouteError from "../../errorHandlers/UnauthorizedRouteError";
+import AuthenticationError from "../../errorHandlers/AuthenticationError";
 
 const createBooking = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const authorizationHeader = req.header("Authorization");
-    const decodedPayload: TUserJwtPayload = jwt.verify(
-      authorizationHeader?.split(" ")[1] as string,
-      config.jwt_secret_key
-    ) as TUserJwtPayload;
+    const token = req.header("Authorization")?.split(" ")[1];
+    if (token) {
+      const decodedPayload: TUserJwtPayload = jwt.verify(
+        token as string,
+        config.jwt_secret_key
+      ) as TUserJwtPayload;
 
-    if (decodedPayload?.email) {
-      const result = await BookingServices.createBookingIntoDB(
-        req.body,
-        decodedPayload.email
-      );
-      sendGenericSuccessfulResponse(
-        res,
-        {
-          message: "Rental created successfully",
-          data: result,
-        },
-        httpStatus.OK
-      );
+      if (decodedPayload?.email) {
+        const result = await BookingServices.createBookingIntoDB(
+          req.body,
+          decodedPayload.email
+        );
+        sendGenericSuccessfulResponse(
+          res,
+          {
+            message: "Rental created successfully",
+            data: result,
+          },
+          httpStatus.OK
+        );
+      } else {
+        throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
+      }
     } else {
-      throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
+      throw new AuthenticationError("No token found is authentication header");
     }
   }
 );
@@ -63,57 +68,51 @@ const getAllBooking = resolveRequestOrThrowError(
 
 const updateSingleBooking = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const authorizationHeader = req.header("Authorization");
-    const decodedPayload: TUserJwtPayload = jwt.verify(
-      authorizationHeader?.split(" ")[1] as string,
-      config.jwt_secret_key
-    ) as TUserJwtPayload;
-
-    if (decodedPayload.role === "admin") {
-      const result = await BookingServices.updateBookingIntoDB(req.params.id);
-      if (result) {
-        sendGenericSuccessfulResponse(
-          res,
-          {
-            message: "Bike return successfully",
-            data: result,
-          },
-          httpStatus.OK
-        );
-      } else {
-        throw new NoDataFoundError("No Data Found", 403);
-      }
+    const result = await BookingServices.updateBookingIntoDB(req.params.id);
+    if (result) {
+      sendGenericSuccessfulResponse(
+        res,
+        {
+          message: "Bike return successfully",
+          data: result,
+        },
+        httpStatus.OK
+      );
     } else {
-      throw new UnauthorizedRouteError();
+      throw new NoDataFoundError("No Data Found", 403);
     }
   }
 );
 
 const getAllBookingsOfSingleUser = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const authorizationHeader = req.header("Authorization");
-    const decodedPayload: TUserJwtPayload = jwt.verify(
-      authorizationHeader?.split(" ")[1] as string,
-      config.jwt_secret_key
-    ) as TUserJwtPayload;
-    if (decodedPayload?.email) {
-      const result = await BookingServices.getAllBookingsOfSingleUserFromDB(
-        decodedPayload.email
-      );
-      if (result.length) {
-        sendGenericSuccessfulResponse(
-          res,
-          {
-            message: `Rentalsretried successfully`,
-            data: result,
-          },
-          httpStatus.OK
+    const token = req.header("Authorization")?.split(" ")[1];
+    if (token) {
+      const decodedPayload: TUserJwtPayload = jwt.verify(
+        token as string,
+        config.jwt_secret_key
+      ) as TUserJwtPayload;
+      if (decodedPayload?.email) {
+        const result = await BookingServices.getAllBookingsOfSingleUserFromDB(
+          decodedPayload.email
         );
+        if (result.length) {
+          sendGenericSuccessfulResponse(
+            res,
+            {
+              message: `Rentalsretried successfully`,
+              data: result,
+            },
+            httpStatus.OK
+          );
+        } else {
+          throw new NoDataFoundError("No Data Found", 403);
+        }
       } else {
-        throw new NoDataFoundError("No Data Found", 403);
+        throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
       }
     } else {
-      throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
+      throw new AuthenticationError("No token found is authentication header");
     }
   }
 );
