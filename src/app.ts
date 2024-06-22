@@ -7,6 +7,7 @@ import { BookingRouter } from "./app/modules/booking/booking.routes";
 import { getPackageName } from "./app/utils/getPakageName";
 import { AuthRouter } from "./app/modules/auth/auth.routes";
 import notFoundRoute from "./app/middlewires/notFoundRoute";
+import httpStatus from "http-status";
 
 const app = express();
 
@@ -19,7 +20,10 @@ app.use("/api/auth", AuthRouter.router);
 app.use("/api/users", UserRouter.router);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(getPackageName());
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: "Bike rental Service is running",
+  });
 });
 
 app.use(globalErrorHandler);

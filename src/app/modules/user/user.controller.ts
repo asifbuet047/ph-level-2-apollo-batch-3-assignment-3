@@ -64,7 +64,7 @@ const updateLoggedInUserProfile = resolveRequestOrThrowError(
     const userCredential = jwt.verify(
       authorizationHeader?.split(" ")[1] as string,
       config.jwt_secret_key
-    );
+    ) as TUserJwtPayload;
 
     const updatedUser = await UserServices.updateSingleUserIntoDB(
       userCredential?.email,

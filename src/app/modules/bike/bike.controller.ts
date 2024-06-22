@@ -67,7 +67,7 @@ const updateSingleBike = resolveRequestOrThrowError(
 
 const deleteSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await BikeServices.deleteSingleBikeFromDB(id);
+    const result = await BikeServices.deleteSingleBikeFromDB(req.params.id);
     if (result) {
       sendGenericSuccessfulResponse(res, {
         message: "Bike deleted successfully",
