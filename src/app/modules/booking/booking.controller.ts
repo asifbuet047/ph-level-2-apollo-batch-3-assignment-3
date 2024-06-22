@@ -17,6 +17,8 @@ import { BookingValidation } from "./booking.validation";
 import { ZodError } from "zod";
 import mongoose from "mongoose";
 import BikeNotAvailableError from "../../errorHandlers/BikeNotAvailableError";
+import AuthorizationError from "../../errorHandlers/AuthorizationError";
+import UnauthorizedRouteError from "../../errorHandlers/UnauthorizedRouteError";
 
 const createBooking = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -61,18 +63,28 @@ const getAllBooking = resolveRequestOrThrowError(
 
 const updateSingleBooking = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await BookingServices.updateBookingIntoDB(req.params.id);
-    if (result) {
-      sendGenericSuccessfulResponse(
-        res,
-        {
-          message: "Bike return successfully",
-          data: result,
-        },
-        httpStatus.OK
-      );
+    const authorizationHeader = req.header("Authorization");
+    const decodedPayload: TUserJwtPayload = jwt.verify(
+      authorizationHeader?.split(" ")[1] as string,
+      config.jwt_secret_key
+    ) as TUserJwtPayload;
+
+    if (decodedPayload.role === "admin") {
+      const result = await BookingServices.updateBookingIntoDB(req.params.id);
+      if (result) {
+        sendGenericSuccessfulResponse(
+          res,
+          {
+            message: "Bike return successfully",
+            data: result,
+          },
+          httpStatus.OK
+        );
+      } else {
+        throw new NoDataFoundError("No Data Found", 403);
+      }
     } else {
-      throw new NoDataFoundError("No Data Found", 403);
+      throw new UnauthorizedRouteError();
     }
   }
 );

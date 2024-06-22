@@ -106,8 +106,6 @@ const getAllBookingsOfSingleUserFromDB = async (email: string) => {
   } else {
     throw new NoDataFoundError("No user found", httpStatus.NOT_FOUND);
   }
-  const result = await BookingModel.find({ userId: email }).lean();
-  return result;
 };
 
 const getAllBookingsFromDB = async () => {

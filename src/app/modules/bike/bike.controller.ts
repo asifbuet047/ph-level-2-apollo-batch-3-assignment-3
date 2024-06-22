@@ -16,7 +16,7 @@ const createSinglebike = resolveRequestOrThrowError(
       const decodedPayload: TUserJwtPayload = jwt.verify(
         token as string,
         config.jwt_secret_key
-      );
+      ) as TUserJwtPayload;
 
       if (decodedPayload.role === "admin") {
         const result = await BikeServices.createSingleBikeIntoDB(req.body);
