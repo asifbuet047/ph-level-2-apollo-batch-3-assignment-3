@@ -71,7 +71,7 @@ const updateSingleBike = resolveRequestOrThrowError(
       const decodedPayload: TUserJwtPayload = jwt.verify(
         token as string,
         config.jwt_secret_key
-      );
+      ) as TUserJwtPayload;
       if (decodedPayload.role === "admin") {
         const { id } = req.params;
         const result = await BikeServices.updateBikeIntoDB(id, req.body);
@@ -95,15 +95,23 @@ const updateSingleBike = resolveRequestOrThrowError(
 const deleteSingleBike = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const result = await BikeServices.deleteSingleBikeFromDB(id);
-    console.log(result);
-    if (result) {
-      sendGenericSuccessfulResponse(res, {
-        message: "Bike deleted successfully",
-        data: result,
-      });
-    } else {
-      throw new NoDataFoundError("No Data Found", 403);
+    const token = req.header("Authorization")?.split(" ")[1];
+    if (token) {
+      const decodedPayload: TUserJwtPayload = jwt.verify(
+        token as string,
+        config.jwt_secret_key
+      ) as TUserJwtPayload;
+      if (decodedPayload.role === "admin") {
+        const result = await BikeServices.deleteSingleBikeFromDB(id);
+        if (result) {
+          sendGenericSuccessfulResponse(res, {
+            message: "Bike deleted successfully",
+            data: result,
+          });
+        } else {
+          throw new NoDataFoundError("No Bike Found", 403);
+        }
+      }
     }
   }
 );
