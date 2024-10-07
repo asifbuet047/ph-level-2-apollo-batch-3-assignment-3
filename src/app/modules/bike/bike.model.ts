@@ -30,6 +30,9 @@ const bikeSchema = new Schema<TBike>({
     type: Schema.Types.Boolean,
     default: true,
   },
+  bike_image: {
+    type: Schema.Types.String,
+  },
 });
 
 export const BikeModel = mongoose.model<TBike>("bike", bikeSchema);

@@ -13,6 +13,7 @@ import BikeNotAvailableError from "../errorHandlers/BikeNotAvailableError";
 import NoBikeFoundError from "../errorHandlers/NoBikeFoundError";
 import mongoose from "mongoose";
 import mongooseErrorHandler from "../errorHandlers/mongooseErrorHandler";
+import InvalidImageFileUploadedError from "../errorHandlers/InvalidImageFileUploadedError";
 
 export const globalErrorHandler = (
   error: Error,
@@ -106,8 +107,8 @@ export const globalErrorHandler = (
       message: error.message,
       data: [],
     });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
   } else if (error instanceof SyntaxError && error?.statusCode === 400) {
     errorSources[0].path = "Request body holds inappropriate JSON object";
     return res.status(httpStatus.BAD_REQUEST).json({
@@ -115,6 +116,12 @@ export const globalErrorHandler = (
       message: "Bad request. Invalid JSON",
       errorMessage: errorSources,
       stack: "error stack",
+    });
+  } else if (error instanceof InvalidImageFileUploadedError) {
+    return res.status(httpStatus.CONFLICT).json({
+      success: false,
+      message: error.message,
+      data: [],
     });
   } else {
     return res.status(httpStatus.BAD_REQUEST).json({

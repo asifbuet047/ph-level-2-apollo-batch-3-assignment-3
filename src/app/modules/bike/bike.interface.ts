@@ -7,4 +7,5 @@ export type TBike = {
   model: string;
   brand: string;
   isAvailable: boolean;
+  bike_image: string;
 };

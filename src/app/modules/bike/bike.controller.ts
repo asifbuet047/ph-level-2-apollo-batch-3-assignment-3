@@ -8,15 +8,30 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { TUserJwtPayload } from "../user/user.interface";
 import config from "../../config/config";
 import UnauthorizedRouteError from "../../errorHandlers/UnauthorizedRouteError";
+import { sendImageFileToCloudinaryHostingServer } from "../../utils/sendImageFileToCloudinaryHostingServer";
+import DatabaseOperationFailedError from "../../errorHandlers/DatabaseOperationFailedError";
+import httpStatus from "http-status";
 
 const createSinglebike = resolveRequestOrThrowError(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await BikeServices.createSingleBikeIntoDB(req.body);
+  async (request: Request, response: Response, next: NextFunction) => {
+    const filePath = request.file?.path;
+    const fileName = request.file?.originalname;
+    const info = await sendImageFileToCloudinaryHostingServer(
+      fileName as string,
+      filePath as string
+    );
+    request.body.bike_image = info?.secure_url as string;
+    const result = await BikeServices.createSingleBikeIntoDB(request.body);
     if (result) {
-      sendGenericSuccessfulResponse(res, {
+      sendGenericSuccessfulResponse(response, {
         message: "Bike added successfully",
         data: result,
       });
+    } else {
+      throw new DatabaseOperationFailedError(
+        "Product creation operation failed",
+        httpStatus.INSUFFICIENT_STORAGE
+      );
     }
   }
 );

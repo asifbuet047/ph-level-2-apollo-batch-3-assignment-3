@@ -2,11 +2,12 @@
   "name": "ph-level-2-apollo-batch-3-assignment-3-bike-rental-service",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
     "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "lint": "eslint src --ignore-path .eslintignore --ext .ts",
+    "lint": "eslint .",
     "lint:fix": "npx eslint src --fix",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "format:fix": "npx prettier --write src"
@@ -15,12 +16,14 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "http-status": "^1.7.4",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1",
+    "multer": "1.4.5-lts.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -28,9 +31,8 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
-    "@typescript-eslint/eslint-plugin": "^7.13.0",
-    "@typescript-eslint/parser": "^7.13.0",
-    "eslint": "^8.53.0",
+    "@types/multer": "^1.4.12",
+    "eslint": "^9.12.0",
     "prettier": "^3.3.2",
     "ts-node-dev": "^2.0.0"
   },
