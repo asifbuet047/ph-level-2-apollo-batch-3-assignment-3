@@ -107,7 +107,7 @@ export const globalErrorHandler = (
       message: error.message,
       data: [],
     });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
     // @ts-ignore
   } else if (error instanceof SyntaxError && error?.statusCode === 400) {
     errorSources[0].path = "Request body holds inappropriate JSON object";

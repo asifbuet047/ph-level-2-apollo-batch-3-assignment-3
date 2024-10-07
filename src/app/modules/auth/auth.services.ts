@@ -49,7 +49,7 @@ const loginValidUserByCredentialsStoredInDB = async (
         const jwtToken = jwt.sign(payLoad, config.jwt_secret_key, {
           expiresIn: "2h",
         });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
         // @ts-ignore
         const { password, createdAt, updatedAt, __v, ...loggedinUser } =
           exitsUser;

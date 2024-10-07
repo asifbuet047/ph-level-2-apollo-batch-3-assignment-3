@@ -5,7 +5,6 @@ import { BikeModel } from "./bike.model";
 const createSingleBikeIntoDB = async (bike: TBike) => {
   const result = await BikeModel.create(bike);
   const pojo = result.toJSON();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const { __v, ...final } = pojo;
   return final;
@@ -15,8 +14,8 @@ const getAllBikeFromDB = async () => {
   const result = await BikeModel.find();
   const refinedResult = result.map((bike) => {
     const pojo = bike.toJSON();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { __v, ...final } = pojo;
     return final;
   });

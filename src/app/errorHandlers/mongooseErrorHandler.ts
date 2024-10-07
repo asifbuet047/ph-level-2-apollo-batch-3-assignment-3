@@ -1,13 +1,9 @@
 import httpStatus from "http-status";
-import mongoose, { MongooseError } from "mongoose";
+import mongoose from "mongoose";
 
 const mongooseErrorHandler = (
   mongooseError: mongoose.Error.ValidationError | mongoose.Error.CastError
-): {
-  statusCode: string | number;
-  message: string;
-  errorSources: { path: string; message: string }[];
-} => {
+) => {
   const statusCode = httpStatus.NOT_ACCEPTABLE;
   let errorSources;
   if (mongooseError instanceof mongoose.Error.CastError) {

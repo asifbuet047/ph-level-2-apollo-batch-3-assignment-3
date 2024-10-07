@@ -16,11 +16,11 @@ const createSinglebike = resolveRequestOrThrowError(
   async (request: Request, response: Response, next: NextFunction) => {
     const filePath = request.file?.path;
     const fileName = request.file?.originalname;
-    const info = await sendImageFileToCloudinaryHostingServer(
+    const info = (await sendImageFileToCloudinaryHostingServer(
       fileName as string,
       filePath as string
-    );
-    request.body.bike_image = info?.secure_url as string;
+    )) as any;
+    request.body.bike_image = info.secure_url as string;
     const result = await BikeServices.createSingleBikeIntoDB(request.body);
     if (result) {
       sendGenericSuccessfulResponse(response, {

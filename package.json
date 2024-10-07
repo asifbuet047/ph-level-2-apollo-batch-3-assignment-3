@@ -2,11 +2,10 @@
   "name": "ph-level-2-apollo-batch-3-assignment-3-bike-rental-service",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
-    "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "lint": "eslint .",
     "lint:fix": "npx eslint src --fix",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
@@ -32,9 +31,13 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/multer": "^1.4.12",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
     "eslint": "^9.12.0",
     "prettier": "^3.3.2",
-    "ts-node-dev": "^2.0.0"
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.2"
   },
   "description": ""
 }

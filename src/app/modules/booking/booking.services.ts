@@ -133,7 +133,7 @@ const updateBookingIntoDB = async (booingId: string) => {
 
       if (bikeInfo) {
         const totalCost = (bikeInfo?.pricePerHour as number) * totalTimeInHours;
-
+        console.log("DASD");
         const updateBooking = await BookingModel.findByIdAndUpdate(
           [booingId],
           {
