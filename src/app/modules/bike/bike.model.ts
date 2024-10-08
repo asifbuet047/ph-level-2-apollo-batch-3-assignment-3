@@ -10,6 +10,10 @@ const bikeSchema = new Schema<TBike>({
     type: Schema.Types.String,
     required: true,
   },
+  brand: {
+    type: Schema.Types.String,
+    required: true,
+  },
   pricePerHour: {
     type: Schema.Types.Number,
     required: true,

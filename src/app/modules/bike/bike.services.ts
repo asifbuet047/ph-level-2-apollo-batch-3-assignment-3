@@ -11,7 +11,7 @@ const createSingleBikeIntoDB = async (bike: TBike) => {
 };
 
 const getAllBikeFromDB = async () => {
-  const result = await BikeModel.find();
+  const result = await BikeModel.find().sort({ pricePerHour: -1 });
   const refinedResult = result.map((bike) => {
     const pojo = bike.toJSON();
     // @ts-ignore
