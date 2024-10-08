@@ -12,6 +12,7 @@ import httpStatus from "http-status";
 const app = express();
 
 app.use(cors());
+app.options("*", cors());
 app.use(express.json());
 
 app.use("/api/bikes", BikeRouter.router);
@@ -22,7 +23,7 @@ app.use("/api/users", UserRouter.router);
 app.get("/", (req: Request, res: Response) => {
   res.status(httpStatus.OK).json({
     success: true,
-    message: "Bike rental Service is running",
+    message: "ph-level-2-apollo-batch-3-assignment-3-bike-rental-service app is running",
   });
 });
 

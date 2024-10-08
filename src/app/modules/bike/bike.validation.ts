@@ -10,7 +10,9 @@ export const bikeCreationValidationSchema = z.object({
     message: "CC of bike is must",
     invalid_type_error: "CC must be number",
   }),
-  year: z.number({ message: "Manufacturing year of bike is must" }),
+  year: z
+    .number({ message: "Manufacturing year of bike is must" })
+    .min(1900, { message: "Must be after 1900" }),
   model: z.string({ message: "Model of bike is must" }),
   brand: z.string({ message: "Brand of bike is must" }),
 });
