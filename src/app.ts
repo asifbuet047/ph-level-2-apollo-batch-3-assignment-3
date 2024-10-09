@@ -12,7 +12,9 @@ import { DiscountRouter } from "./app/modules/discount/discount.routes";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({ exposedHeaders: ["Content-Type", "Authorization", "X-Custom-Header"] })
+);
 app.options("*", cors());
 app.use(express.json());
 
