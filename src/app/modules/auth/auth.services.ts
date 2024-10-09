@@ -45,7 +45,6 @@ const loginValidUserByCredentialsStoredInDB = async (
 
     if (isValid) {
       try {
-        console.log(payLoad);
         const jwtToken = jwt.sign(payLoad, config.jwt_secret_key, {
           expiresIn: "2h",
         });

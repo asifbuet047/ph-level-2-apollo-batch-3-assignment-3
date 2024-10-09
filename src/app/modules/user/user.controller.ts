@@ -31,7 +31,6 @@ const getAllUserProfiles = resolveRequestOrThrowError(
 const getLoggedInUserProfile = resolveRequestOrThrowError(
   async (req: Request, res: Response, next: NextFunction) => {
     const authorizationHeader = req.header("Authorization");
-
     const decodedPayload: TUserJwtPayload = jwt.verify(
       authorizationHeader?.split(" ")[1] as string,
       config.jwt_secret_key
@@ -88,4 +87,5 @@ const updateLoggedInUserProfile = resolveRequestOrThrowError(
 export const UserController = {
   getLoggedInUserProfile,
   updateLoggedInUserProfile,
+  getAllUserProfiles,
 };
